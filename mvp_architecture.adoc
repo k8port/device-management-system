@@ -133,33 +133,39 @@ package "Storage" {
 === Data Models
 
 **Users Table**
-| Column       | Type        | Description                                |
-|--------------|-------------|--------------------------------------------|
-| user_id      | UUID        | Primary key for the user.                 |
-| tenant_id    | UUID        | Foreign key linking the user to a tenant. |
-| email        | String      | Email address for login.                  |
-| role         | Enum        | User role (PARENT or CHILD).              |
-| password_hash| String      | Hashed password for authentication.       |
-| created_at   | Timestamp   | Record creation timestamp.                |
+[cols="1,1,1"]
+|===
+| **Users** | **Type**        | **Description**
+| user_id      | UUID        | Primary key for the user.                 
+| tenant_id    | UUID        | Foreign key linking the user to a tenant. 
+| email        | String      | Email address for login.                  
+| role         | Enum        | User role (PARENT or CHILD).              
+| password_hash| String      | Hashed password for authentication.
+| created_at   | Timestamp   | Record creation timestamp.
+|===
 
 **Tasks Table**
-| Column       | Type        | Description                                |
-|--------------|-------------|--------------------------------------------|
-| task_id      | UUID        | Primary key for the task.                 |
-| tenant_id    | UUID        | Foreign key linking the task to a tenant. |
-| assigned_to  | UUID        | Foreign key linking to `Users.user_id`.   |
-| description  | String      | Task description.                         |
-| points       | Integer     | Points for completing the task.           |
-| due_date     | Timestamp   | Deadline for the task.                    |
-| status       | Enum        | Task status (Pending, Completed, Approved).|
+[cols="1,1,1"]
+|===
+| **Tasks** | **Type**        | **Description**
+| task_id      | UUID        | Primary key for the task.                
+| tenant_id    | UUID        | Foreign key linking the task to a tenant. 
+| assigned_to  | UUID        | Foreign key linking to `Users.user_id`.  
+| description  | String      | Task description.                        
+| points       | Integer     | Points for completing the task.          
+| due_date     | Timestamp   | Deadline for the task.                   
+| status       | Enum        | Task status (Pending, Completed, Approved).
+|===
 
 **Rewards Table**
-| Column       | Type        | Description                                |
-|--------------|-------------|--------------------------------------------|
-| reward_id    | UUID        | Primary key for the reward.               |
-| tenant_id    | UUID        | Foreign key linking the reward to a tenant.|
-| reward_name  | String      | Name of the reward.                       |
-| points       | Integer     | Points required to redeem the reward.     |
+[cols="1,1,1"]
+|===
+| **Rewards** | **Type**        | **Description**
+| reward_id    | UUID        | Primary key for the reward.              
+| tenant_id    | UUID        | Foreign key linking the reward to a tenant.
+| reward_name  | String      | Name of the reward.                      
+| points       | Integer     | Points required to redeem the reward.    
+|===
 
 === Tenant Management
 
