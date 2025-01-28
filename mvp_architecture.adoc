@@ -1,4 +1,3 @@
-content = """
 = SPEC-001: Multi-Tenant SaaS for Task-Based Device Management for Parents and Children
 :sectnums:
 :toc:
@@ -93,4 +92,39 @@ The MVP will be developed with a multi-tenant SaaS architecture, focusing on dat
 5. **Data Storage**:
    - Proofs (e.g., photos/videos) stored in AWS S3 using tenant-specific folders (e.g., `s3://yourapp/{tenant_id}/proofs/`).
 
+
 === Component Diagram
+
+```plantuml
+@startuml
+package "Frontend" {
+  [Parent Dashboard]
+  [Child Dashboard]
+}
+
+package "Backend" {
+  [Authentication Service]
+  [Tenant Management Service]
+  [Task Management Service]
+  [Reward Management Service]
+}
+
+package "Database" {
+  [PostgreSQL]
+  [Users Table]
+  [Tasks Table]
+  [Rewards Table]
+}
+
+package "Storage" {
+  [AWS S3]
+}
+
+[Parent Dashboard] --> [Authentication Service]
+[Child Dashboard] --> [Authentication Service]
+[Authentication Service] --> [Tenant Management Service]
+[Tenant Management Service] --> [PostgreSQL]
+[Task Management Service] --> [PostgreSQL]
+[Reward Management Service] --> [PostgreSQL]
+[Task Management Service] --> [AWS S3]
+@enduml
