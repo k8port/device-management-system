@@ -128,3 +128,236 @@ package "Storage" {
 [Reward Management Service] --> [PostgreSQL]
 [Task Management Service] --> [AWS S3]
 @enduml
+
+=== Data Models
+
+**Users Table**
+| Column       | Type        | Description                                |
+|--------------|-------------|--------------------------------------------|
+| user_id      | UUID        | Primary key for the user.                 |
+| tenant_id    | UUID        | Foreign key linking the user to a tenant. |
+| email        | String      | Email address for login.                  |
+| role         | Enum        | User role (PARENT or CHILD).              |
+| password_hash| String      | Hashed password for authentication.       |
+| created_at   | Timestamp   | Record creation timestamp.                |
+
+**Tasks Table**
+| Column       | Type        | Description                                |
+|--------------|-------------|--------------------------------------------|
+| task_id      | UUID        | Primary key for the task.                 |
+| tenant_id    | UUID        | Foreign key linking the task to a tenant. |
+| assigned_to  | UUID        | Foreign key linking to `Users.user_id`.   |
+| description  | String      | Task description.                         |
+| points       | Integer     | Points for completing the task.           |
+| due_date     | Timestamp   | Deadline for the task.                    |
+| status       | Enum        | Task status (Pending, Completed, Approved).|
+
+**Rewards Table**
+| Column       | Type        | Description                                |
+|--------------|-------------|--------------------------------------------|
+| reward_id    | UUID        | Primary key for the reward.               |
+| tenant_id    | UUID        | Foreign key linking the reward to a tenant.|
+| reward_name  | String      | Name of the reward.                       |
+| points       | Integer     | Points required to redeem the reward.     |
+
+=== Tenant Management
+
+1. **Tenant Onboarding**:
+   - API to create a tenant and generate a unique `tenant_id`.
+   - Automatically assign the first user as the tenant admin (Parent role).
+
+2. **Tenant Scoping Middleware**:
+   - Extract `tenant_id` from JWT tokens.
+   - Inject `tenant_id` into every database query to isolate tenant data.
+
+=== Algorithms
+
+**Task Assignment**
+1. Parent creates a task with a description, due date, and points.
+2. Task is saved to the `Tasks` table with `tenant_id` and `assigned_to` fields.
+3. Task appears only for children within the same tenant.
+
+**Reward Redemption**
+1. Child selects a reward from available options.
+2. Backend checks the child’s current points against the reward cost.
+3. If sufficient, the points are deducted, and the reward is marked as redeemed.
+
+**Proof Submission**
+1. Child uploads proof of task completion.
+2. File is stored in AWS S3 under the folder `/{tenant_id}/proofs/`.
+3. File URL is linked to the task in the database.
+
+== Implementation
+
+=== Step 1: Environment Setup
+1. **Frontend**:
+   - Set up a React or Next.js project.
+   - Install required libraries:
+     - State Management: Redux Toolkit or React Context API.
+     - Styling: Tailwind CSS or Material-UI.
+     - API Handling: Axios or React Query.
+   - Create reusable components:
+     - `TaskCard` for displaying tasks.
+     - `RewardCard` for rewards.
+     - `UserCard` for child profiles.
+
+2. **Backend**:
+   - Set up a Node.js/Express or FastAPI project.
+   - Install required libraries:
+     - Authentication: Passport.js or Firebase Admin SDK.
+     - ORM/ODM: Sequelize or Prisma for database integration.
+     - API Routing: Express Router or FastAPI’s routing tools.
+   - Implement middleware for role-based access control (RBAC).
+
+3. **Database**:
+   - Deploy a PostgreSQL database (e.g., on AWS RDS or Heroku).
+   - Use tools like pgAdmin or Prisma Studio to manage schemas.
+   - Initialize tables for `Users`, `Tasks`, and `Rewards`.
+
+=== Step 2: Feature Implementation
+
+1. **Authentication and Multi-Tenancy**:
+   - Configure Firebase Auth or Auth0 for secure login.
+   - Use JWTs to validate and manage user sessions.
+   - Store a `tenant_id` with every user to support multi-tenancy.
+
+2. **Parent Dashboard**:
+   - Implement APIs:
+     - `POST /tasks` to create and assign tasks.
+     - `GET /tasks` to fetch tasks for a child.
+     - `PATCH /tasks/:id` to approve or deny a task.
+   - Build the frontend components to display tasks and statuses.
+
+3. **Child Dashboard**:
+   - Implement APIs:
+     - `GET /tasks` to fetch assigned tasks.
+     - `PATCH /tasks/:id` to mark a task as completed.
+   - Allow proof uploads (photos/videos) with file storage on AWS S3 or Firebase Storage.
+
+4. **Reward System**:
+   - Implement APIs:
+     - `POST /rewards` to create a reward (parent).
+     - `GET /rewards` to fetch available rewards (child).
+     - `POST /rewards/redeem` to redeem a reward (child).
+   - Deduct points from the child’s balance upon redemption.
+
+5. **Notifications and Reminders**:
+   - Use a background job scheduler (e.g., Bull for Node.js or Celery for Python) to send reminders for overdue tasks.
+   - Integrate push notifications via Firebase Cloud Messaging (FCM).
+
+6. **Device Management Integration**:
+   - Research Android APIs for device locking/unlocking and implement basic callbacks.
+   - Provide fallback documentation for manual device restriction on iOS.
+
+=== Step 3: Deployment
+
+1. **Frontend**:
+   - Deploy to Vercel, Netlify, or AWS Amplify.
+   - Use environment variables for API endpoints and secrets.
+
+2. **Backend**:
+   - Containerize the backend using Docker.
+   - Deploy to AWS EC2, AWS Lambda, or Heroku.
+   - Use a load balancer (AWS ALB) for scaling.
+
+3. **Database**:
+   - Host PostgreSQL on AWS RDS or a managed service like Supabase.
+   - Regularly back up the database for disaster recovery.
+
+4. **Monitoring and Logging**:
+   - Use tools like New Relic or AWS CloudWatch for application monitoring.
+   - Log errors and events using services like Sentry.
+
+== Milestones
+
+=== Phase 1: Core Multi-Tenant Architecture (Week 1-2)
+1. **Backend Setup**:
+   - Implement authentication using Firebase Auth or Auth0 with tenant-aware JWT tokens.
+   - Set up PostgreSQL with `Users`, `Tasks`, and `Rewards` tables (shared schema with `tenant_id`).
+   - Create APIs for tenant onboarding, user management, and tenant-specific scoping middleware.
+
+2. **Frontend Setup**:
+   - Develop a React or Next.js project.
+   - Create basic tenant-specific login and dashboard structure for parents and children.
+
+3. **Data Isolation**:
+   - Ensure all backend queries are scoped by `tenant_id` to enforce data isolation.
+
+=== Phase 2: Core Features (Week 3-4)
+1. **Parent Dashboard**:
+   - Implement APIs for task and reward management (create, update, delete, fetch).
+   - Build UI for parents to assign tasks and define rewards.
+
+2. **Child Dashboard**:
+   - Implement APIs for fetching tasks and submitting task completion with proof.
+   - Build UI for children to view and complete tasks, and track rewards.
+
+3. **Proof Submission**:
+   - Integrate AWS S3 for storing proof files under tenant-specific folders.
+
+=== Phase 3: Notifications and MVP Polish (Week 5-6)
+1. **Notifications**:
+   - Add APIs and backend job scheduler (e.g., Bull or Celery) for reminders about overdue tasks.
+   - Implement frontend UI for viewing notifications.
+
+2. **MVP UI Polish**:
+   - Improve UX/UI for dashboards using Tailwind CSS or Material-UI.
+   - Add basic error handling and validation for all forms and actions.
+
+=== Phase 4: Deployment and Testing (Week 7-8)
+1. **Deployment**:
+   - Deploy backend to AWS (EC2 or Lambda) or Heroku.
+   - Deploy frontend to Vercel or Netlify.
+   - Configure CI/CD pipelines using GitHub Actions or similar.
+
+2. **Testing**:
+   - Write unit tests for backend services (Jest, Mocha).
+   - Conduct end-to-end testing using Cypress or Playwright.
+   - Perform load testing to validate multi-tenancy scalability.
+
+=== Stretch Goals (Post-MVP)
+1. Implement Stripe for subscription management and billing.
+2. Add tenant-specific branding (e.g., logo, colors).
+3. Provide basic analytics for parents (task completion rates, reward stats).
+
+== Gathering Results
+
+=== Evaluation Criteria
+
+1. **Multi-Tenancy Validation**:
+   - Ensure complete data isolation across tenants by testing with multiple family accounts.
+   - Verify that queries scoped by `tenant_id` only return data specific to the tenant.
+
+2. **Functionality Testing**:
+   - Validate that core features (task and reward management, proof submission) work seamlessly for both parents and children.
+   - Test notifications for overdue tasks and reward redemption workflows.
+
+3. **Scalability Testing**:
+   - Conduct load testing with simulated tenants and users to verify backend performance under high traffic.
+   - Monitor response times for tenant-specific queries and AWS S3 proof uploads.
+
+4. **User Experience Feedback**:
+   - Gather feedback from beta users (e.g., families) on the dashboard usability and workflow clarity.
+   - Evaluate if the design meets parent-child interaction goals (e.g., ease of task assignment and completion tracking).
+
+5. **Security Audit**:
+   - Ensure compliance with best practices for sensitive data handling (e.g., encryption, secure authentication).
+   - Verify that role-based access control (RBAC) prevents unauthorized actions (e.g., children accessing parent-only features).
+
+=== Post-MVP Success Metrics
+
+1. **Engagement Metrics**:
+   - Track active users per tenant and task completion rates over time.
+   - Measure reward redemption rates and proof submission frequency.
+
+2. **Operational Metrics**:
+   - Monitor API error rates, latency, and uptime.
+   - Evaluate AWS S3 storage growth and database query performance.
+
+3. **Scalability Potential**:
+   - Identify bottlenecks in tenant-specific query handling or storage.
+   - Assess the cost-effectiveness of hosting infrastructure under simulated growth.
+
+4. **User Retention**:
+   - Measure the percentage of tenants that remain active after onboarding.
+   - Analyze feedback from early adopters to prioritize future enhancements.
