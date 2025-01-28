@@ -1,8 +1,9 @@
+
 = SPEC-001: Multi-Tenant SaaS for Task-Based Device Management for Parents and Children
 :sectnums:
 :toc:
 
-== Background 
+== Background
 
 Parents often struggle to strike a balance between granting their children access to devices and ensuring accountability for household responsibilities. With the rise of digital devices as both tools and entertainment, managing screen time has become a significant concern. To address this, a solution is needed that motivates children to complete chores and tasks in exchange for device privileges.
 
@@ -92,7 +93,6 @@ The MVP will be developed with a multi-tenant SaaS architecture, focusing on dat
 5. **Data Storage**:
    - Proofs (e.g., photos/videos) stored in AWS S3 using tenant-specific folders (e.g., `s3://yourapp/{tenant_id}/proofs/`).
 
-
 === Component Diagram
 
 ```plantuml
@@ -127,7 +127,8 @@ package "Storage" {
 [Task Management Service] --> [PostgreSQL]
 [Reward Management Service] --> [PostgreSQL]
 [Task Management Service] --> [AWS S3]
-@enduml```
+@enduml
+```
 
 === Data Models
 
@@ -361,3 +362,4 @@ package "Storage" {
 4. **User Retention**:
    - Measure the percentage of tenants that remain active after onboarding.
    - Analyze feedback from early adopters to prioritize future enhancements.
+
