@@ -1,9 +1,6 @@
-content = """
-= SPEC-001: Multi-Tenant SaaS for Task-Based Device Management for Parents and Children
-:sectnums:
-:toc:
+# Device Management System for Families
 
-== Background
+## Background
 
 Parents often struggle to strike a balance between granting their children access to devices and ensuring accountability for household responsibilities. With the rise of digital devices as both tools and entertainment, managing screen time has become a significant concern. To address this, a solution is needed that motivates children to complete chores and tasks in exchange for device privileges.
 
@@ -11,9 +8,9 @@ This SaaS platform aims to help parents assign and track tasks, monitor children
 
 This design prioritizes scalability for a multi-tenant architecture, ease of use for both parents and children, and security for sensitive user data.
 
-== Requirements
+## Requirements
 
-=== Must-Have Features
+### Must-Have Features
 1. **Parent Dashboard**:
    - Add and manage child profiles.
    - Create, assign, and manage tasks with descriptions, deadlines, and point values.
@@ -41,7 +38,7 @@ This design prioritizes scalability for a multi-tenant architecture, ease of use
    - Investigate APIs for managing device access (e.g., Android APIs).
    - Provide a fallback with manual guides for parents to enforce access rules.
 
-=== Should-Have Features
+### Should-Have Features
 1. **Notifications**:
    - Notify children of pending or overdue tasks.
    - Notify parents of completed tasks awaiting approval.
@@ -59,13 +56,13 @@ This design prioritizes scalability for a multi-tenant architecture, ease of use
 2. **Third-Party API Integration**:
    - Explore integration with platforms like Google Family Link for advanced device management.
 
-=== Won’t-Have Features (For MVP Phase)
+
+### Won’t-Have Features (For MVP Phase)
 1. Integration with iOS Screen Time APIs (due to platform restrictions).
 2. Support for enterprise-level tenants or organizations (focus remains on individual families for now).
 
-== Method
 
-=== Architecture Design
+## Architecture Design
 
 The MVP will be developed with a multi-tenant SaaS architecture, focusing on data isolation, tenant-specific functionality, and scalability.
 
@@ -93,38 +90,3 @@ The MVP will be developed with a multi-tenant SaaS architecture, focusing on dat
 5. **Data Storage**:
    - Proofs (e.g., photos/videos) stored in AWS S3 using tenant-specific folders (e.g., `s3://yourapp/{tenant_id}/proofs/`).
 
-=== Component Diagram
-
-```plantuml
-@startuml
-package "Frontend" {
-  [Parent Dashboard]
-  [Child Dashboard]
-}
-
-package "Backend" {
-  [Authentication Service]
-  [Tenant Management Service]
-  [Task Management Service]
-  [Reward Management Service]
-}
-
-package "Database" {
-  [PostgreSQL]
-  [Users Table]
-  [Tasks Table]
-  [Rewards Table]
-}
-
-package "Storage" {
-  [AWS S3]
-}
-
-[Parent Dashboard] --> [Authentication Service]
-[Child Dashboard] --> [Authentication Service]
-[Authentication Service] --> [Tenant Management Service]
-[Tenant Management Service] --> [PostgreSQL]
-[Task Management Service] --> [PostgreSQL]
-[Reward Management Service] --> [PostgreSQL]
-[Task Management Service] --> [AWS S3]
-@enduml
