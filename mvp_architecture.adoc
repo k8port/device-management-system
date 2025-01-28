@@ -127,7 +127,7 @@ package "Storage" {
 [Task Management Service] --> [PostgreSQL]
 [Reward Management Service] --> [PostgreSQL]
 [Task Management Service] --> [AWS S3]
-@enduml
+@enduml```
 
 === Data Models
 
