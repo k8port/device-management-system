@@ -1,13 +1,7 @@
 name: Feature
 description: Create a new feature implementation task
-title: "[Feature]: "
 labels: ["feature"]
-body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for taking the time to create a feature issue!
-        
+body:   
   - type: textarea
     id: description
     attributes:
