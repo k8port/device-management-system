@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "ts-node dist/index.js",
-    "dev": "nodemon src/index.ts"
+    "install:all": "pnpm install --recursive",
+    "build": "npx tsc -p backend/tsconfig.json && npx tsc -p frontend/tsconfig.json"
   },
   "keywords": [],
   "author": "",
