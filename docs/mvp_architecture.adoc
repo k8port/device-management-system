@@ -93,6 +93,109 @@ The MVP will be developed with a multi-tenant SaaS architecture, focusing on dat
 5. **Data Storage**:
    - Proofs (e.g., photos/videos) stored in AWS S3 using tenant-specific folders (e.g., `s3://yourapp/{tenant_id}/proofs/`).
 
+=== API Definitions
+==== **Authentication APIs**
+. POST /auth/register
+   - Registers a user (Parent or Child) and associates them with a tenant_id.
+   - **Payload**:
+[source,json]
+   {
+      "email": "parent@example.com",
+      "password": "securepassword",
+      "role": "PARENT",
+      "tenant_id": "UUID"
+   }
+   - **Response**:
+[source,json]
+   {
+      "token": "JWT_TOKEN"
+   }
+. POST /auth/login
+   - Authenticates a user and returns a JWT token.
+   - **Payload**:
+[source,json]
+   {
+      "email": "parent@example.com",
+      "password": "securepassword"
+   }
+   - **Response**:
+[source,json]
+   {
+      "token": "JWT_TOKEN",
+      "role": "PARENT"
+   }
+
+==== Tenant Management APIs
+. POST /tenants
+   - Onboars a new tenant (e.g., a new family account)
+   - **Payload**:
+[source,json]
+   {
+      "tenant_name": "Smith Family",
+      "admin_email": "parent@smithfamily.com"
+   }
+   - **Response**:
+[source,json]
+   {
+      "tenant_id": "UUID",
+      "admin_user_id": "UUID"
+   }
+
+==== **Task APIs**
+. POST /tasks
+   - Creates a new task to be assigned to a child.
+   - **Payload**:
+[source,json]
+   {
+      "description": "Clean your room",
+      "points": 50,
+      "due_date": "2025-01-31"
+   }
+   - **Response**:
+[source,json]
+   {
+      "task_id": "UUID",
+      "status": "PENDING"
+   }
+. GET /tasks
+   - Fetches all tasks assigned to the authenticated user.
+   - Query parameters: 
+      - `assigned_to`: Filter tasks by user ID (for children to fetch their own tasks)
+. PATCH /tasks/:id
+   - Updates the status of a task (e.g., approve or deny, marks complete).
+   - **Payload**:
+[source,json]
+   {
+      "status": "Completed",
+      "proof_url": "https://example.com/proof.jpg"
+   }
+
+==== **Reward APIs**
+. POST /rewards
+   - Creates a new reward within the tenant's scope.
+   - **Payload**:
+[source,json]
+   {
+      "reward_name": "Stay up 30 minutes later",
+      "points_required": 100
+   }
+. GET /rewards
+   - Fetches all rewards available to the authenticated user.
+. POST /rewards/redeem
+   - Redeems a reward for the authenticated user.
+   - **Payload**:
+[source,json]
+   {
+      "reward_id": "UUID",
+      "user_id": "child_user_id"
+   }
+   - **Response**:
+[source,json]
+   {
+      "status": "REDEEMED",
+      "remaining_points": 100
+   }
+
 === Component Diagram
 
 ```plantuml

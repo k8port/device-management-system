@@ -1,13 +1,11 @@
-# family device management system  
+# family device management system
+
 chore-allowance system
 
-
-
-# Background Understanding
+## Background Understanding
 
 Target Platform: Target platform is primarly mobile devices like phones, watches, tablets.  
 Authentication:  Accounts can only be established by adults.  Separate logins are required for parents and children.  Users are assigned roles.  
-
 
 SPEC-1: Chore and Reward Management System for Families
 :sectnums:
@@ -20,6 +18,7 @@ The Chore and Reward Management System is designed to facilitate household task 
 == Requirements
 
 *Must Have:*
+
 - The system should support mobile devices, including phones, tablets, and smartwatches.
 - Separate user authentication and login processes for parents and children, with different sets of user activities for each.
 - Parents should be able to assign various tasks to children, including household chores, learning activities, and physical exercises.
@@ -29,19 +28,21 @@ The Chore and Reward Management System is designed to facilitate household task 
 - A cap on monthly spending or rewards set by parents.
 
 *Should Have:*
+
 - Multi-factor authentication for added security.
 - Notifications and reminders for tasks and deadlines for children.
 - Progress tracking for both tasks and financial goals.
 
 *Could Have:*
+
 - Integration with popular e-commerce sites to facilitate the wish list feature.
 - Educational content on financial literacy and goal setting.
 - A leaderboard or gamification elements to motivate children.
 
 *Won't Have:*
+
 - Desktop or web platform support initially, focusing solely on mobile platforms.
 - Integration with non-digital rewards or physical reward distribution.
-
 
 ### Step 2: Method - Architecture Design
 

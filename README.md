@@ -11,6 +11,7 @@ This design prioritizes scalability for a multi-tenant architecture, ease of use
 ## Requirements
 
 ### Must-Have Features
+
 1. **Parent Dashboard**:
    - Add and manage child profiles.
    - Create, assign, and manage tasks with descriptions, deadlines, and point values.
