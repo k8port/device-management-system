@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "install:all": "pnpm install --recursive",
-    "build": "npx tsc -p backend/tsconfig.json && npx tsc -p frontend/tsconfig.json"
+    "build": "npx tsc -p backend/tsconfig.json && npx tsc -p frontend/tsconfig.json",
+    "start": "ts-node backend/dist/index.ts",
+    "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\""
   },
   "keywords": [],
   "author": "",
